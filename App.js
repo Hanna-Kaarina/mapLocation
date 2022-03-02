@@ -28,16 +28,23 @@ export default function App() {
     });
   } 
 
-  useEffect(() => {(async () => { // useEffect ei vaan toimi!
+  useEffect(() => {
+    const fetchLocation = async () => { // useEffect ei vaan toimi!
     let { status } = await Location.requestForegroundPermissionsAsync();
   if (status !== 'granted') {
     Alert.alert('No permission to get location')
-  return;  
-}
+  } else {
+    try {  
 let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.High}); 
-console.log(location);  
-  })();
-  }, [])
+console.log(location);
+setCordinates({ ...cordinates, latitude: location.coords.lat, longitude: location.coords.lng });  
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+    }
+  fetchLocation();
+  }, []);
 
   return (
     <View style={styles.container}>
